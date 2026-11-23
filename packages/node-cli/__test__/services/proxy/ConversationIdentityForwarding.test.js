@@ -22,6 +22,8 @@ const optIn = { 'x-netsuite-conversation-bridge': 'codex-v1' };
 const identity = { ...optIn, 'thread-id': threadId };
 const claudeOptIn = { 'x-netsuite-conversation-bridge': 'claude-v1' };
 const claudeIdentity = { ...claudeOptIn, 'x-claude-code-session-id': threadId };
+const bundledClineOptIn = { 'x-netsuite-conversation-bridge': 'cline-bundled-v1' };
+const clineMarker = '<netsuite-conversation-id>synthetic-cline-task</netsuite-conversation-id>';
 const payload = '{ "tools": [{ "parameters": { "minimum": 9007199254740993 }}] }';
 let proxy, upstream, forwarded;
 
@@ -97,12 +99,12 @@ test('replays the mapped ID and unchanged bytes on authentication retry', async 
 	expect(forwarded.map(request => request.body)).toEqual([payload, payload]);
 });
 
-test('keeps the Cline marker bridge working on Chat Completions', async () => {
+test.each(['cline-v1', 'cline-bundled-v1'])('maps and strips a Chat Completions system marker with %s', async bridge => {
 	const messages = [
-		{ role: 'system', content: '<netsuite-conversation-id>synthetic-cline-task</netsuite-conversation-id>' },
+		{ role: 'system', content: clineMarker },
 		{ role: 'user', content: 'Synthetic prompt' },
 	];
-	const result = await send('/chat/completions', { 'x-netsuite-conversation-bridge': 'cline-v1' }, JSON.stringify({ messages }));
+	const result = await send('/chat/completions', { 'x-netsuite-conversation-bridge': bridge }, JSON.stringify({ messages }));
 	const [request] = forwarded;
 	expect(result.status).toBe(200);
 	expect(request.headers['x-netsuite-memoryid']).toBe('734dc44e-ce9e-5cb1-85e4-88f3e1e386d6');
@@ -110,10 +112,32 @@ test('keeps the Cline marker bridge working on Chat Completions', async () => {
 	expect(JSON.parse(request.body)).toEqual({ messages: [messages[1]] });
 });
 
-test('keeps Cline opt-in scoped to the original Chat Completions endpoint', async () => {
-	expect((await send('/v1/responses', { 'x-netsuite-conversation-bridge': 'cline-v1' })).status).toBe(200);
+test.each(['cline-v1', 'cline-bundled-v1'])('scopes %s to the original Chat Completions endpoint', async bridge => {
+	expect((await send('/v1/responses', { 'x-netsuite-conversation-bridge': bridge })).status).toBe(200);
 	expect(forwarded[0].headers['x-netsuite-memoryid']).toBeUndefined();
 	expect(forwarded[0].body).toBe(payload);
+});
+
+test('forwards bundled Cline requests unchanged from workspaces without the adapter', async () => {
+	const body = `{ "messages": [{ "role": "user", "content": "${clineMarker}" }] }`;
+	expect((await send('/chat/completions', bundledClineOptIn, body)).status).toBe(200);
+	expect((await send('/chat/completions', { ...bundledClineOptIn, 'x-netsuite-memoryid': threadId }, body)).status).toBe(200);
+	expect(forwarded.map(request => request.headers['x-netsuite-conversation-bridge'])).toEqual([undefined, undefined]);
+	expect(forwarded.map(request => request.headers['x-netsuite-memoryid'])).toEqual([undefined, threadId]);
+	expect(forwarded.map(request => request.body)).toEqual([body, body]);
+});
+
+test.each([
+	['cline-v1', {}, 'No marker', 'bridge_marker_required'],
+	['cline-bundled-v1', {}, '<netsuite-conversation-id>invalid value</netsuite-conversation-id>', 'malformed_system_marker'],
+	['cline-bundled-v1', {}, `${clineMarker}\n${clineMarker}`, 'multiple_system_markers'],
+	['cline-bundled-v1', { 'x-netsuite-memoryid': otherId }, clineMarker, 'conflicting_identity'],
+])('rejects invalid Cline bridge requests (%s, %j, %s)', async (bridge, headers, content, code) => {
+	const messages = [{ role: 'system', content }];
+	const result = await send('/chat/completions', { ...headers, 'x-netsuite-conversation-bridge': bridge }, JSON.stringify({ messages }));
+	expect(result.status).toBe(400);
+	expect(JSON.parse(result.body)).toEqual({ error: code });
+	expect(forwarded).toHaveLength(0);
 });
 
 test('maps the native Claude Code session ID on Messages and preserves the original body and query', async () => {

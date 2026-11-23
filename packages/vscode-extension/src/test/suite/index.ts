@@ -37,6 +37,7 @@ export function run(): Promise<void> {
 			'ProxyLifecycleService.test.js',
 			'FeedbackService.test.js',
 			'ClineIntegrationAdapter.test.js',
+			'ClineConversationIdentityAdapter.test.js',
 			'ExtensionHostRestartService.test.js',
 			'ProxyService.test.js',
 			'VSConsoleLogger.test.js',

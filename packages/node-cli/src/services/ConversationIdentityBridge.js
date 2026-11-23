@@ -10,6 +10,7 @@ const { createHash } = require('node:crypto');
 const CLINE_BRIDGE_NAMESPACE = '47e5a790-8d73-4d3e-b671-0f3c5062e39a';
 const BRIDGE_HEADER = 'x-netsuite-conversation-bridge';
 const MEMORY_HEADER = 'x-netsuite-memoryid';
+const BUNDLED_CLINE_BRIDGE = 'cline-bundled-v1';
 const CHAT_COMPLETIONS_PATH = '/api/internal/devassist/chat/completions';
 const CLAUDE_MESSAGES_PATH = '/api/internal/devassist/v1/messages';
 const INFERENCE_PATH = /^\/api\/internal\/devassist\/(?:v1\/)?(?:chat\/completions|responses(?:\/compact)?|messages)$/;
@@ -31,7 +32,7 @@ function conversationUuid(nativeId) {
 	return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
-function extractClineIdentity(body, headers) {
+function extractClineIdentity(body, headers, markerRequired) {
 	if (Object.entries(headers).some(([name, value]) => name.toLowerCase() === 'content-encoding' && value !== undefined)) throw new IdentityError('encoded_body_not_supported_by_bridge');
 	let request;
 	try { request = JSON.parse(body.toString('utf8')); } catch { throw new IdentityError('invalid_json_body'); }
@@ -63,7 +64,10 @@ function extractClineIdentity(body, headers) {
 		return [message];
 	});
 	if (nativeIds.length > 1) throw new IdentityError('multiple_system_markers');
-	if (nativeIds.length === 0) throw new IdentityError('bridge_marker_required');
+	if (nativeIds.length === 0) {
+		if (markerRequired) throw new IdentityError('bridge_marker_required');
+		return undefined;
+	}
 	return { conversationId: conversationUuid(nativeIds[0]), body: Buffer.from(JSON.stringify({ ...request, messages })) };
 }
 
@@ -78,8 +82,9 @@ function bridgeConversation(body, { headers, method, path }) {
 	const requestPath = path.split('?', 1)[0];
 	if (method !== 'POST' || !INFERENCE_PATH.test(requestPath)) return { body, headers };
 	const bridge = singleHeader(headers, BRIDGE_HEADER, 'multiple_bridge_headers');
+	const clineBridge = bridge === 'cline-v1' || bridge === BUNDLED_CLINE_BRIDGE;
 	if (bridge === undefined
-		|| (bridge === 'cline-v1' && requestPath !== CHAT_COMPLETIONS_PATH)
+		|| (clineBridge && requestPath !== CHAT_COMPLETIONS_PATH)
 		|| (bridge === 'claude-v1' && requestPath !== CLAUDE_MESSAGES_PATH)) return { body, headers };
 
 	const supplied = singleHeader(headers, MEMORY_HEADER, 'multiple_identity_headers');
@@ -96,18 +101,20 @@ function bridgeConversation(body, { headers, method, path }) {
 		if (sessionId === undefined) throw new IdentityError('claude_session_id_required');
 		if (typeof sessionId !== 'string' || !UUID.test(sessionId)) throw new IdentityError('invalid_claude_session_id');
 		conversationId = sessionId.toLowerCase();
-	} else if (bridge === 'cline-v1') {
-		({ conversationId, body: outgoingBody } = extractClineIdentity(body, headers));
+	} else if (clineBridge) {
+		const identity = extractClineIdentity(body, headers, bridge !== BUNDLED_CLINE_BRIDGE);
+		if (identity) ({ conversationId, body: outgoingBody } = identity);
 	} else {
 		throw new IdentityError('unsupported_bridge_version');
 	}
-	if (supplied !== undefined && conversationId !== supplied.toLowerCase()) throw new IdentityError('conflicting_identity');
+	if (conversationId !== undefined && supplied !== undefined && conversationId !== supplied.toLowerCase()) throw new IdentityError('conflicting_identity');
 
-	const strippedHeaders = [BRIDGE_HEADER, MEMORY_HEADER];
+	const strippedHeaders = [BRIDGE_HEADER];
+	if (conversationId !== undefined) strippedHeaders.push(MEMORY_HEADER);
 	if (outgoingBody !== body) strippedHeaders.push('content-length', 'transfer-encoding');
 	const outgoingHeaders = Object.fromEntries(Object.entries(headers)
 		.filter(([name]) => !strippedHeaders.includes(name.toLowerCase())));
-	outgoingHeaders[MEMORY_HEADER] = conversationId;
+	if (conversationId !== undefined) outgoingHeaders[MEMORY_HEADER] = conversationId;
 	if (outgoingBody !== body) outgoingHeaders['content-length'] = String(outgoingBody.byteLength);
 	return { body: outgoingBody, headers: outgoingHeaders };
 }

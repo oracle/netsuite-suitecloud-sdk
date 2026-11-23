@@ -77,7 +77,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const suitecloudProjectStatusBar = createSuiteCloudProjectStatusBar();
 	const authIDStatusBar = createAuthIDStatusBar();
 	updateStatusBars(vscode.window.activeTextEditor, suitecloudProjectStatusBar, authIDStatusBar);
-	initializeSuiteCloudControlPanel(context, proxyStatusBar, sdkDependenciesReady);
+	const controlPanel = initializeSuiteCloudControlPanel(context, proxyStatusBar, sdkDependenciesReady);
 	void sdkDependenciesReady
 		.then(async () => {
 			await applyPendingSuiteCloudClineConfig();
@@ -107,6 +107,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// register more commands
 	context.subscriptions.push(
+		vscode.commands.registerCommand(commandsInfoMap.configureclineidentity.vscodeCommandId,
+			() => controlPanel.configureClineIdentity()
+		),
 		vscode.commands.registerCommand(commandsInfoMap.opencontrolpanel.vscodeCommandId,
 			() => openSuiteCloudControlPanel()
 		),

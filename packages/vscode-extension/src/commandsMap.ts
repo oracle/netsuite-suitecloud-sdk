@@ -34,6 +34,7 @@ export type CliCommandsInfoMapType = {
 
 export type VSCodeSpecificCommandsInfoMapType = {
 	opencontrolpanel: CommandInfo;
+	configureclineidentity: CommandInfo;
 	opencontrolpanelwalkthrough: CommandInfo;
 };
 
@@ -119,6 +120,10 @@ export const commandsInfoMap: CommandsInfoMapType = {
 		vscodeCommandId: 'suitecloud.validate',
 		cliCommandName: 'project:validate',
 		vscodeCommandName: 'Validate Project',
+	},
+	configureclineidentity: {
+		vscodeCommandId: 'suitecloud.configureclineidentity',
+		vscodeCommandName: 'Set Up Cline Conversation Tracking',
 	},
 	opencontrolpanel: {
 		vscodeCommandId: 'suitecloud.opencontrolpanel',

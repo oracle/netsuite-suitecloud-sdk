@@ -40,6 +40,7 @@ import type {
 import type ClineCompatibilityService from './developerAssistant/cline/ClineCompatibilityService';
 import type ClineConfigService from './developerAssistant/cline/ClineConfigService';
 import ClineConfigChangeWatcher from './developerAssistant/cline/ConfigChangeWatcher';
+import { configureClineConversationIdentity } from './developerAssistant/cline/ConversationIdentityProfile';
 import type ClineFileStore from './developerAssistant/cline/FileStore';
 import type SdkService from './developerAssistant/sdk/SdkService';
 import ProxyLifecycleService from './developerAssistant/proxy/ProxyLifecycleService';
@@ -81,6 +82,7 @@ export default class ControlPanelController {
 	private readonly _proxyWorkflow: ProxyWorkflow;
 	private readonly _clineWorkflow: ClineWorkflow;
 	private readonly _clineConfigChangeWatcher: ClineConfigChangeWatcher;
+	private readonly _clineFileStore: ClineFileStore;
 	private readonly _messageDispatcher: MessageDispatcher;
 	private readonly _presenter: PanelPresenter;
 	private readonly _preferencesStore: PreferencesStore;
@@ -108,6 +110,7 @@ export default class ControlPanelController {
 		this._proxyService = this._createProxyService();
 		this._proxyWorkflow = this._createProxyWorkflow();
 		this._clineWorkflow = this._createClineWorkflow(dependencies);
+		this._clineFileStore = dependencies.clineFileStore;
 		this._messageDispatcher = this._createMessageDispatcher();
 		this._clineConfigChangeWatcher = this._createClineConfigChangeWatcher(
 			dependencies.clineFileStore
@@ -323,6 +326,37 @@ export default class ControlPanelController {
 			this._presenter.setStoppedStatus();
 		} finally {
 			this._presenter.dispose();
+		}
+	}
+
+	async configureClineIdentity(): Promise<void> {
+		const workspaceFolders = vscode.workspace.workspaceFolders;
+		const cline = vscode.extensions.getExtension(CLINE_EXTENSION_ID);
+		const { actions, errors, modelId } = SUITECLOUD_PANEL_RUNTIME_STRINGS;
+		if (!vscode.workspace.isTrusted || workspaceFolders?.length !== 1 ||
+			workspaceFolders[0].uri.scheme !== 'file' || cline?.packageJSON.version !== '4.1.27') {
+			this._presenter.showError(errors.clineIdentityWorkspaceRequired);
+			return;
+		}
+		if (!this._isProxyAvailable()) {
+			this._presenter.showError(actions.startProxyBeforeClineApply);
+			return;
+		}
+		try {
+			const apiKey = await this._resolveApiKey();
+			if (!apiKey) {
+				this._presenter.showError(actions.noApiKeyForClineApply);
+				return;
+			}
+			await configureClineConversationIdentity(this._clineFileStore, {
+				workspacePath: workspaceFolders[0].uri.fsPath,
+				baseUrl: this._state.baseUrl,
+				apiKey,
+				modelId: modelId.toLowerCase(),
+			});
+			this._presenter.showSuccess(actions.clineIdentityConfigured);
+		} catch (error) {
+			this._presenter.showError(errors.clineIdentitySetupFailed(String(error)));
 		}
 	}
 
