@@ -89,6 +89,7 @@ export const SUITECLOUD_PANEL_RUNTIME_STRINGS = {
 		noClineConfigChangesDetected: message(CONTROL_PANEL.ACTIONS.NO_CLINE_CONFIG_CHANGES),
 		clineRestartRequired: message(CONTROL_PANEL.ACTIONS.CLINE_RESTART_REQUIRED),
 		clineConfigSaved: message(CONTROL_PANEL.ACTIONS.CLINE_CONFIG_SAVED),
+		clineIdentityConfigured: message(CONTROL_PANEL.ACTIONS.CLINE_IDENTITY_CONFIGURED),
 		workspaceClineSetupIsManual: message(CONTROL_PANEL.ACTIONS.WORKSPACE_CLINE_SETUP_MANUAL),
 		welcomeNotificationDisabled: message(CONTROL_PANEL.ACTIONS.WELCOME_NOTIFICATION_DISABLED),
 		portChangeRequiresStoppedProxy: message(
@@ -117,6 +118,10 @@ export const SUITECLOUD_PANEL_RUNTIME_STRINGS = {
 		startProxyDisclaimerAction: message(CONTROL_PANEL.DIALOGS.START_PROXY_DISCLAIMER_ACTION),
 	},
 	errors: {
+		clineIdentityWorkspaceRequired: message(CONTROL_PANEL.ERRORS.CLINE_IDENTITY_WORKSPACE_REQUIRED),
+		clineIdentityLocalProxyRequired: message(CONTROL_PANEL.ERRORS.CLINE_IDENTITY_LOCAL_PROXY_REQUIRED),
+		clineIdentitySetupFailed: (reason: string) =>
+			message(CONTROL_PANEL.ERRORS.CLINE_IDENTITY_SETUP_FAILED, reason),
 		invalidAuthId: message(CONTROL_PANEL.ERRORS.INVALID_AUTH_ID),
 		invalidPortRange: (min: number, max: number) =>
 			message(CONTROL_PANEL.ERRORS.INVALID_PORT_RANGE, min, max),

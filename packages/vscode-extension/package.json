@@ -107,6 +107,11 @@
 				"category": "SuiteCloud"
 			},
 			{
+				"command": "suitecloud.configureclineidentity",
+				"title": "Set Up Cline Conversation Tracking",
+				"category": "SuiteCloud"
+			},
+			{
 				"command": "suitecloud.opencontrolpanel",
 				"title": "Open Developer Assistant",
 				"category": "SuiteCloud"

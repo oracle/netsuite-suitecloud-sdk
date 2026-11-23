@@ -28,12 +28,14 @@ export default class ClineFileStore {
 	private readonly _providersFile: string;
 	private readonly _sensitiveFiles: ReadonlySet<string>;
 
-	constructor(dataDirectory: string = path.join(os.homedir(), '.cline', 'data')) {
-		this._dataDirectory = dataDirectory;
+	constructor(dataDirectory?: string) {
+		this._dataDirectory = dataDirectory ?? (process.env.CLINE_DATA_DIR ||
+			path.join(process.env.CLINE_DIR || path.join(os.homedir(), '.cline'), 'data'));
 		this._globalStateFile = path.join(this._dataDirectory, 'globalState.json');
 		this._secretsFile = path.join(this._dataDirectory, 'secrets.json');
 		this._legacyWorkspaceStateFile = path.join(this._dataDirectory, 'workspace', 'workspaceState.json');
-		this._providersFile = path.join(this._dataDirectory, 'settings', 'providers.json');
+		this._providersFile = (dataDirectory === undefined && process.env.CLINE_PROVIDER_SETTINGS_PATH) ||
+			path.join(this._dataDirectory, 'settings', 'providers.json');
 		this._sensitiveFiles = new Set([path.resolve(this._secretsFile), path.resolve(this._providersFile)]);
 	}
 

@@ -8,6 +8,7 @@
 const http = require('node:http');
 const https = require('node:https');
 const EventEmitter = require('events');
+const { CHAT_COMPLETIONS_PATH, bridgeConversation } = require('./ConversationIdentityBridge');
 
 /** Events */
 const EVENTS = {
@@ -52,7 +53,6 @@ const {
 
 const MAX_RETRY_ATTEMPTS = 1;
 const LOCAL_HOSTNAME = '127.0.0.1';
-const DEVASSIST_CHAT_COMPLETIONS_PATH = '/api/internal/devassist/chat/completions'
 const DEBUG_ENV_VAR = 'SC_DEBUG';
 
 /** Target server port */
@@ -118,7 +118,16 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 			});
 
 			request.on('end', async () => {
-				const body = Buffer.concat(bodyChunks);
+				let resolved;
+				try {
+					resolved = bridgeConversation(Buffer.concat(bodyChunks), requestOptions);
+				} catch (error) {
+					this._writeResponseMessage(response, error.status === 400 ? 400 : 500,
+						error.status === 400 ? error.code : 'identity_resolution_failed');
+					return;
+				}
+				const { body, headers } = resolved;
+				requestOptions.headers = headers;
 				const proxyRequest = await this._createProxyRequest(requestOptions, body, response, 0);
 				proxyRequest.write(body);
 				proxyRequest.end();
@@ -313,7 +322,7 @@ class SuiteCloudAuthProxyService extends EventEmitter {
 		};
 
 		// added to get "stream responses" from netsuite devassist backend
-		if (request?.url.startsWith(DEVASSIST_CHAT_COMPLETIONS_PATH)) {
+		if (request?.url.startsWith(CHAT_COMPLETIONS_PATH)) {
 			requestOptions.headers = {
 				...requestOptions.headers,
 				Accept: 'text/event-stream'
