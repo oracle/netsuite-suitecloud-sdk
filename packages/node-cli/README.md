@@ -14,7 +14,7 @@ CLI for Node.js is an interactive tool that guides you through all the steps of 
 ## Prerequisites
 The following software is required to work with SuiteCloud CLI for Node.js:
 - Node.js version 22 LTS
-- Oracle JDK version 17 or 21
+- Oracle JDK version 17, 21, or 25
 
 Read the full list of prerequisites in [SuiteCloud CLI for Node.js Installation Prerequisites](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_1558708810.html).
 
@@ -25,8 +25,8 @@ The following table shows the CLI versions currently available in NPM.
 
 | CLI Versions Available in NPM | 
 |:-----------------------------:|
+| 4.2.0 |
 | 4.1.0 |
-| 4.0.0 |
 
 
 ## Installation
